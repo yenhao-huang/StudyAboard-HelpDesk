@@ -2,18 +2,28 @@
 
 ## How to run
 
-Run the following scripts in order:
+Run the following scripts in order and run in workspace:
 
 ```bash
-python script/prep_data.py              # Prepare and clean the raw dataset
+python script/prep_data.py              # Prepare Google Natural Questions (100K)
 python script/build_faiss_idx.py       # Build FAISS index from passage embeddings
 python script/retrieval_generation.py  # Run the retrieval-augmented generation pipeline
 ```
 
-### Example
+### Question/Answer Example
 
 ```text
-Question: Who produces the most wool in the world?
+Question: "Who produces the most wool in the world?"
+Answer: China is currently the largest producer of wool by volume, followed by Australia.
+
+Question: "Who discovered gravity?"
+Answer: Sir Isaac Newton is credited with discovering the concept of gravity in the late 17th century.
+
+Question: "What is the population of Canada?"
+Answer: As of 2024, the population of Canada is approximately 40 million people.
+
+Question: "When was the Eiffel Tower built?"
+Answer: The Eiffel Tower was completed in 1889 for the Exposition Universelle (World’s Fair) held in Paris.
 ```
 
 ### Scripts/
@@ -60,67 +70,5 @@ Question: Who produces the most wool in the world?
 ### Model
 
 Input: context, user query
-
+Model: deepseek-r1-8B
 Output: LLM answer
-
-## Checklist
-
-### Prepare Libaraires & Dataset
-
-- [x]  Install required libraries: `datasets`, `sentence-transformers`, `faiss-cpu`, `openai`
-- [x]  Load the **Natural Questions** dataset (`train[:100]` for sampling)
-- [x]  Save the cleaned passages to a local file (e.g., `nq_passages.json`)
-
----
-
-### Embedding & Indexing
-
-- [x]  Load passages from `nq_passages.json`
-- [x]  Initialize the embedding model (e.g., `all-MiniLM-L6-v2`)
-- [x]  Encode all passages into dense vectors
-- [x]  Build a FAISS index (`IndexFlatL2`)
-- [x]  Save the FAISS index as `nq_index.faiss`
-- [x]  Create append file function
-
----
-
-### Retriever
-
-- [x]  Take user input as a query
-- [x]  Use FAISS to search for top-k similar passages
-- [x]  Collect the retrieved passages and print for inspection
-
----
-
-### Generator
-
-- [x]  Concatenate the retrieved passages into a prompt
-- [x]  Format the prompt with structure:
-    
-    ```
-    Context:
-    [retrieved_passages]
-    
-    Question:
-    [user_query]
-    
-    Answer:
-    
-    ```
-    
-- [x]  Call LLM (e.g., `Qwen-3`) with the prompt
-- [x]  Print or display the generated answer
-
----
-
-### Testing
-
-- [ ]  Try multiple real-world queries like:
-    - "Who discovered gravity?"
-    - "What is the population of Canada?"
-    - "When was the Eiffel Tower built?"
-- [ ]  Check if the generated answers match the retrieved context
-- [ ]  Evaluate quality of both retrieval and generation
-- [ ]  Optionally log answers and context for review
-
----

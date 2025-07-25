@@ -39,7 +39,7 @@ def search_query(index_path: str, embedding_model, query: str, k: int = 5):
     vectorstore = FAISS.load_local(index_path, embeddings=embedding_model, allow_dangerous_deserialization=True)
 
     results = vectorstore.similarity_search(query, k=k)
-
+    
     print(f"\n🔍 Top-{k} results for query: \"{query}\"\n")
     for i, doc in enumerate(results):
         print(f"[{i+1}] {doc.page_content}\n{'-'*50}")
