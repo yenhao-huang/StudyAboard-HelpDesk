@@ -43,4 +43,6 @@ def search_query(index_path: str, embedding_model, query: str, k: int = 5):
     print(f"\n🔍 Top-{k} results for query: \"{query}\"\n")
     for i, doc in enumerate(results):
         print(f"[{i+1}] {doc.page_content}\n{'-'*50}")
+    
+    return results
 
