@@ -2,13 +2,18 @@
 
 ## How to run
 
-python script/prep_data.py
-python script/build_faiss_idx.py
-python script/search_faiss_idx.py
+Run the following scripts in order:
 
+```bash
+python script/prep_data.py              # Prepare and clean the raw dataset
+python script/build_faiss_idx.py       # Build FAISS index from passage embeddings
+python script/retrieval_generation.py  # Run the retrieval-augmented generation pipeline
 ```
-Questions: who produces the most wool in the world
 
+### Example
+
+```text
+Question: Who produces the most wool in the world?
 ```
 
 ### Scripts/
