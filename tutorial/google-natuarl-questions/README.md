@@ -68,7 +68,6 @@ Answer: The Eiffel Tower was completed in 1889 for the Exposition Universelle (W
             - summarization
 
 ### Model
-
-Input: context, user query
-Model: deepseek-r1-8B
-Output: LLM answer
+- Input: context, user query
+- Model: deepseek-r1-8B
+- Output: LLM answer
