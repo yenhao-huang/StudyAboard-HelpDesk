@@ -11,7 +11,7 @@ from utils.chatbot import utils, data_utils, model_utils
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Evaluate")
-    parser.add_argument("--model", type=str, default="deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B")
+    parser.add_argument("--model", type=str, default="Qwen/Qwen3-8B")
     parser.add_argument("--enable_lora", type=bool, default=False)
     parser.add_argument("--eval_batch", type=int, default=1)
     parser.add_argument("--output_dir", type=str, default="./results")
@@ -46,5 +46,5 @@ if __name__ == "__main__":
         eval_agent,
         tokenizer,
         model_inputs, 
-        max_new_tokens=250
+        max_new_tokens=50
     )
