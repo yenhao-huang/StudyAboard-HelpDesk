@@ -9,7 +9,6 @@ from langchain_community.vectorstores import FAISS
 from langchain.embeddings.base import Embeddings  # interface
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
-REQUIRED_COLS = ["question", "answer", "source", "class"]
 
 def load_doc(files: Iterable[str]) -> List[Document]:
     """
@@ -25,25 +24,69 @@ def load_doc(files: Iterable[str]) -> List[Document]:
         # Read CSV
         df = pd.read_csv(p, encoding="utf-8")
 
+        required_cols = ["question", "answer", "source", "class", "uuid"]
+        page_conent_col = "answer"
+        metadata_cols = ["question", "class", "source", "uuid"]
+
         # Ensure all required columns are present
-        missing = set(REQUIRED_COLS) - set(df.columns)
+        missing = set(required_cols) - set(df.columns)
         if missing:
             raise KeyError(f"{p} missing columns: {sorted(missing)}")
 
         # Clean missing values and convert all to string
-        df = df[REQUIRED_COLS].fillna("").astype(str)
+        df = df[required_cols].fillna("").astype(str)
 
         # Convert each row into a Document
-        for row in df[REQUIRED_COLS].itertuples(index=False, name=None):
-            q, a, s, c = row
+        for row in df[required_cols].itertuples(index=False, name=None):
+            metadata = {}
+            for col_name, item in zip(required_cols, row):
+                if col_name in metadata_cols:
+                    metadata[col_name] = item
+                elif col_name == page_conent_col:
+                    a = item
 
             docs.append(
                 Document(
                     page_content=a,
-                    metadata={"question": q, "class": c, "source": s}
+                    metadata=metadata
                 )
             )
+
     return docs
+
+def add_chunk_id(docs: List[Document]) -> List[Document]:
+    for idx, doc in enumerate(docs):
+        if "uuid" not in doc.metadata:
+            raise KeyError("Each original Document must have a 'uuid' in metadata before splitting.")
+        chunk_id = f"{doc.metadata['uuid']}_{idx}"
+        doc.metadata["chunk_id"] = chunk_id
+
+def save_chunk2id(docs: List[Document], output_path: str):
+    chunks = []
+    chunk_ids = []
+    class_all = []
+    answers = []
+
+    for doc in docs:
+        question = doc.metadata.get("question", "")
+        answer = doc.page_content
+        chunk_id = doc.metadata.get("chunk_id", "")
+        c = doc.metadata.get("class", "")
+        if question and chunk_id and c and answer:
+            chunks.append(question)
+            chunk_ids.append(chunk_id)
+            class_all.append(c)
+            answers.append(answer)
+
+    # Create DataFrame for chunk_id mapping
+    df_chunk2id = pd.DataFrame({
+        "class": class_all,
+        "chunk": chunks,
+        "answer": answers,
+        "chunk_id": chunk_ids,
+    })
+
+    df_chunk2id.to_csv(output_path, index=False, encoding="utf-8")
 
 def split(docs: List[Document], chunk_size: int = 512) -> List[Document]:
     """
@@ -53,6 +96,8 @@ def split(docs: List[Document], chunk_size: int = 512) -> List[Document]:
         raise ValueError("No documents provided; cannot split empty list.")
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=chunk_size, chunk_overlap=200)
     all_splits = text_splitter.split_documents(docs)
+    add_chunk_id(all_splits)
+    save_chunk2id(all_splits, "../data/metadata/chunk2id.csv")
     return all_splits
 
 def build_new_index(docs: List[Document], index_dir: str, embedding_model: Embeddings) -> FAISS:

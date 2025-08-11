@@ -24,8 +24,8 @@ def create_parser():
     parser.add_argument(
         "--doc_path",
         type=str,
-        default="data",
-        help="Path to JSON file containing raw text passages"
+        default="data/docs/common_questions",
+        help="Path to retrival file containing raw text passages"
     )
 
     parser.add_argument(

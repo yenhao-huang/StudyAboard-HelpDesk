@@ -203,6 +203,7 @@ def test():
     save_chain_graph(chain_wo, "../metadata/worag_graph.png", method="png")
     chain_rag = chat_with_rag(args.emb_model, args.faiss_idx_path, args.k, args.chatbot_model)
     save_chain_graph(chain_rag, "../metadata/rag_graph.png", method="png")
+    raise "1"
     print("=== Answer without RAG ===")
     print(chain_wo.invoke({"question": args.query}))
     print()
@@ -211,5 +212,4 @@ def test():
     print(chain_rag.invoke(args.query))
  
 if __name__ == "__main__":
-    #test()
-    evaluate()
+    test()

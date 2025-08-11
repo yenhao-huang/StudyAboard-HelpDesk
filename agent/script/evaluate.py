@@ -30,11 +30,11 @@ def get_correctness_chain():
 
     return LLMChain(llm=llm, prompt=prompt)
 
-def evaluate_retrieval():
+def evaluate_retrieval(input_path: str):
     retriever = get_retriever(PARAMS.faiss_idx_path, PARAMS.emb_model, PARAMS.k)
     
     # Load ground truth data
-    gt_data = pd.read_csv("../data/test/retrieval_eval.csv")  # columns: ['question', 'answer', 'source']
+    gt_data = pd.read_csv(input_path)
 
     top_k = PARAMS.k
     correct_count = 0
@@ -46,16 +46,13 @@ def evaluate_retrieval():
         print(query)
         # Perform retrieval
         docs: list[Document] = retriever.get_relevant_documents(query)
+        print(docs)
         # Check if any of top-k has correct source
-        retrieved_sources = [doc.page_content for doc in docs]
-        
-        # 字串前置處理
-        gt_source_stripped = gt_source.strip()
-        retrieved_sources_stripped = [source.strip() for source in retrieved_sources]
+        retrieved_id = [doc.metadata["chunk_id"] for doc in docs]
 
         # 判斷是否正確
         is_correct = False
-        if gt_source_stripped in retrieved_sources_stripped:
+        if gt_source in retrieved_id:
             correct_count += 1
             is_correct = True
         
@@ -128,4 +125,5 @@ def evaluate_generation():
     print("結果已儲存至 qa_eval_result.csv")
 
 if __name__ == "__main__":
-    evaluate_retrieval()
+    input_path = "../data/eval/retrieval/common_questions.csv"
+    evaluate_retrieval(input_path)
