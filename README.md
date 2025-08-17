@@ -17,9 +17,25 @@
 ```
 ## How to Use
 ```
-cd chatbot/app
-uvicorn main:app --reload
+cd chatbot
+uvicorn app.main:app --reload
 ```
+### Chatbot 參數設定
+file: app.services.model.py
+
+定義 `ChatbotParams`，集中管理模型與檢索設定：
+
+- `emb_model`：Embedding 模型名稱  
+- `faiss_idx_path`：FAISS 索引路徑  
+- `k`：檢索筆數  
+- `chatbot_model`：聊天模型  
+- `judge_model`：評估模型  
+- `with_rag`：是否啟用 RAG  
+
+內建三組參數：
+1. **`PARAMS_ALIBABA_WORAG`** — Alibaba Embedding，關閉 RAG（純生成）  
+2. **`PARAMS_ALIBABA`** — Alibaba Embedding，啟用 RAG  
+3. **`PARAMS_SENTENCE`** — Sentence-Transformers Embedding（英文優化），啟用 RAG
 
 ## Techniques
 ### FastAPI

@@ -8,7 +8,7 @@ import tempfile
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.insert(0, project_root)
 
-from utils.rag import create_emb, process_faiss_idx
+from utils.rag import create_emb, process_faiss_idx, common_utils
 from utils.google_cloud_api.google_drive_api import get_files_in_folder
 
 def create_parser():
@@ -24,7 +24,7 @@ def create_parser():
     parser.add_argument(
         "--doc_path",
         type=str,
-        default="data/docs/common_questions",
+        default="data/docs",
         help="Path to retrival file containing raw text passages"
     )
 
@@ -49,11 +49,7 @@ if __name__ == "__main__":
 
     # get files in data directory
     data_dir = os.path.join(project_root, args.doc_path)
-    files = []
-    for f in os.listdir(data_dir):
-        path = os.path.join(data_dir, f)
-        if os.path.isfile(path):
-            files.append(path)
+    files = common_utils.list_all_files(data_dir)
 
     # load documents from files
     docs = process_faiss_idx.load_doc(files)
