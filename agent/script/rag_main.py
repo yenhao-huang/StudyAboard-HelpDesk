@@ -9,6 +9,8 @@ load_dotenv()
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.insert(0, project_root)
 
+import json
+
 from utils.rag import create_emb
 from utils.rag.build_rag import chat_without_rag, chat_with_rag
 from utils.rag.viz_rag import save_chain_graph
@@ -48,6 +50,28 @@ def get_params(setting: str):
         params = PARAMS.PARAMS_DEEPSEEK_WORAG
     elif setting == "deepseek":
         params = PARAMS.PARAMS_DEEPSEEK
+    elif setting == "qwen3":
+        params = PARAMS.PARAMS_EMB_QWEN3
+    elif setting == "qwen3_small":
+        params = PARAMS.PARAMS_EMB_QWEN3_SMALL
+    elif setting == "baai":
+        params = PARAMS.PARAMS_EMB_BAAI
+    elif setting == "baai_bge_m3":
+        params = PARAMS.PARAMS_EMB_BAAI_BGE_M3
+    elif setting == "tencent_conan":
+        params = PARAMS.PARAMS_EMB_TENCENT_CONAN
+    elif setting == "custom":
+        with open("params.json", "r", encoding="utf-8") as f:
+                cfg = json.load(f)
+
+        params = PARAMS.ChatbotParams(
+            emb_model=cfg["emb_model"],
+            faiss_idx_path=cfg["faiss_idx_path"],
+            k=cfg["k"],
+            chatbot_model=cfg["chatbot_model"],
+            judge_model=cfg["judge_model"],
+            with_rag=cfg["with_rag"],
+        )
     else:
         raise ValueError(f"Unsupported setting: {setting}")
 

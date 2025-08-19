@@ -13,7 +13,7 @@ from langchain.chains import LLMChain
 from langchain_openai import ChatOpenAI
 
 from rag_main import get_params
-from utils.rag.build_rag import chat_without_rag, chat_with_rag
+from utils.rag.build_rag import chat_without_rag, chat_with_rag, get_retriever
 from params import PARAMS_ALIBABA, PARAMS_ALIBABA_WORAG, PARAMS_SENTENCE
 
 def create_parser():
@@ -152,16 +152,6 @@ def get_llm_judger(chat_model: str, api_key: str) -> LLMChain:
         temperature=0,
     )
 
-    # with ground truth
-    '''
-    prompt = PromptTemplate.from_template(
-        "請根據以下 Ground Truth 判斷模型的回答是否正確：\n\n"
-        "Ground Truth:\n{ground_truth}\n\n"
-        "Answer:\n{answer}\n\n"
-        "請只回答：「正確」或「不正確」。"
-    )
-    '''
-
 
     # without ground truth
     prompt = PromptTemplate.from_template(
@@ -172,40 +162,6 @@ def get_llm_judger(chat_model: str, api_key: str) -> LLMChain:
     )
 
     return LLMChain(llm=llm, prompt=prompt)
-
-'''
-# with ground truth
-def evaluate_gener_unit(file_path: str, chain_rag: object, llm_judger: object) -> None:
-    df = pd.read_csv(file_path)
-    results = [] 
-    for i, row in tqdm(df.iterrows(), total=len(df)):
-        question = row["question"]
-        ground_truth = row["ground_truth"]
-
-        answer = chain_rag.invoke(question)
-        try:
-            result = llm_judger.run(question=question, answer=answer)
-        except Exception as e:
-            result = f"Error: {str(e)}"
-
-        print(f"[{i+1}] 問題: {question}")
-        print(f"回答: {answer}")
-        print(f"評估結果: {result}")
-        print("=" * 50)
-
-        results.append({
-            "question": question,
-            "answer": answer,
-            "ground_truth": ground_truth,
-            "evaluation": result
-        })
-
-        if (i + 1) % 4 == 0:
-            print("已完成 8 筆，休息 90 秒...")
-            time.sleep(180)
-
-    return results
-'''
 
 # without ground truth
 def evaluate_gener_unit(file_path: str, chain_generation: object, llm_judger: object) -> None:
