@@ -16,7 +16,7 @@
 ## **Project Structure**
 
 ```
-RAG-CHATBOT/
+StudyAboard-Assistant/
 ├── agent/                 # LLM + RAG API
 ├── tutorial/              # RAG 練習與範例
 ├── telegram_frontend.py   # Telegram Bot 前端
