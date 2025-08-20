@@ -1,11 +1,13 @@
-# **RAG-CHATBOT**
+# 留學代辦客服
 
 基於 RAG 的**留學代辦客服系統**，整合LLM API、後端服務與 Telegram 前端，協助用戶快速獲取正確資訊，降低地域性問題造成的幻覺。
 
 **Results**
 
 * **Retrieval Precision\@5**：85.5%
-* **Generation Demo**：見影片 <video src="metadata/rag_chabot.mp4" controls width="600"></video>
+* **Generation Demo**：
+
+<video src="metadata/rag_chabot.mp4" controls width="600"></video>
 
 ---
 
