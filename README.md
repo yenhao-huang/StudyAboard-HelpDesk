@@ -7,7 +7,9 @@
 * **Retrieval Precision\@5**：85.5%
 * **Generation Demo**：
 
-<img src="metadata/demo.gif" width="50%" />
+<p align="center">
+  <img src="metadata/demo_hd.gif" width="50%" />
+</p>
 
 ---
 
