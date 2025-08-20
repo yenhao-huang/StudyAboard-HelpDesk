@@ -1,6 +1,6 @@
 # RAG-CHATBOT
 
-本專案是一個基於 **Retrieval-Augmented Generation (RAG)** 的聊天系統，整合 LLM API、後端服務與前端介面，並提供 RAG 練習範例。
+本專案是一個基於 **Retrieval-Augmented Generation (RAG)** 的聊天系統，整合 LLM API、後端服務與前端介面。
 
 ---
 
