@@ -7,8 +7,7 @@
 * **Retrieval Precision\@5**：85.5%
 * **Generation Demo**：
 
-<video src="metadata/rag_chabot.mp4" controls width="600"></video>
-
+![Demo](metadata/demo_hd.gif)
 ---
 
 ## **Project Structure**
