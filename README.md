@@ -7,7 +7,7 @@
 * **Retrieval Precision\@5**：85.5%
 * **Generation Demo**：
 
-![Demo](metadata/demo_hd.gif)
+<img src="metadata/demo.gif" width="50%" />
 ---
 
 ## **Project Structure**
