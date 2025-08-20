@@ -1,44 +1,79 @@
-# RAG-CHATBOT
+# **RAG-CHATBOT**
 
-本專案是一個基於 Retrieval-Augmented Generation (RAG) 的**留學代辦客服系統**，整合 LLM API、後端服務與前端介面，協助用戶快速獲取正確資訊，並解決地域性問題造成的幻覺。
+基於 **Retrieval-Augmented Generation (RAG)** 的留學代辦客服系統，整合 **LLM API、後端服務與 Telegram 前端**，協助用戶快速獲取正確資訊，降低地域性問題造成的幻覺。
 
-* **結果**
-  * Retrieval: **Precision\@5 = 85.5%**
-  * Generation:
+**Results**
 
-<video src="metadata/rag_chabot.mp4" controls width="600"></video>
+* **Retrieval Precision\@5**：85.5%
+* **Generation Demo**：見影片 <video src="metadata/rag_chabot.mp4" controls width="600"></video>
+
 ---
 
-## Project Structure
+## **Project Structure**
 
 ```
 RAG-CHATBOT/
-├── agent/         # LLM + RAG API
-├── app/           # 後端服務 (FastAPI)
-├── frontend/      # 前端介面
-├── tutorial/      # RAG 練習與範例
-├── .env           # 環境變數
-├── .gitignore     # 忽略檔案設定
-└── README.md      # 專案說明文件
+├── agent/                 # LLM + RAG API
+├── tutorial/              # RAG 練習與範例
+├── telegram_frontend.py   # Telegram Bot 前端
+├── .env                   # 環境變數 (需自行建立)
+├── .gitignore
+└── README.md
 ```
 
 ---
 
-## How to Use
-
-啟動後端服務：
+## **Installation**
 
 ```bash
-cd chatbot
-uvicorn app.main:app --reload
+git clone git@github.com:yenhao-huang/RAG-chatbot.git
+cd RAG-chatbot
+pip install -r requirements.txt
+```
+
+建立 `.env` 檔案：
+
+```bash
+cp .env.example .env
+```
+
+在 `.env` 中設定：
+
+```dotenv
+TELEGRAM_BOT_TOKEN=your_telegram_bot_token
+OPENROUTER_API_KEY=your_openrouter_api_key
+OPENAI_API_KEY=your_openai_api_key
+LANGSMITH_TRACING=your_langsmith_tracing_value   # "true" 或 "false"
+LANGSMITH_ENDPOINT=your_langsmith_endpoint
+LANGSMITH_API_KEY=your_langsmith_api_key
+LANGSMITH_PROJECT=your_langsmith_project
+PYTHONPATH=.
 ```
 
 ---
 
-## Chatbot 參數設定
+## **Quick Start**
 
-位置：`app/services/model.py`
-透過 `ChatbotParams` 集中管理模型與檢索設定：
+### 1. 啟動 Telegram 前端
+
+```bash
+python3 telegram_frontend.py
+```
+
+機器人上線後，可在 Telegram 與 Bot 對話。
+
+### 2. 啟動後端服務
+
+```bash
+cd agent/script/
+python3 chatbot_tgram.py
+```
+
+## 更新 Chatbot 參數設定
+
+位置：`agent/script/params.json`
+
+模型與檢索設定：
 
 * `emb_model`：Embedding 模型名稱
 * `faiss_idx_path`：FAISS 索引路徑
@@ -46,28 +81,3 @@ uvicorn app.main:app --reload
 * `chatbot_model`：聊天模型
 * `judge_model`：評估模型
 * `with_rag`：是否啟用 RAG
-
-**內建三組參數**：
-
-1. `PARAMS_ALIBABA_WORAG` — Alibaba Embedding，關閉 RAG（純生成）
-2. `PARAMS_ALIBABA` — Alibaba Embedding，啟用 RAG
-3. `PARAMS_SENTENCE` — Sentence-Transformers Embedding（英文優化），啟用 RAG
-
----
-
-## Techniques
-
-### FastAPI — HTML Rendering
-
-```python
-from fastapi.responses import HTMLResponse
-from fastapi.templating import Jinja2Templates
-```
-
-* **Input**: `Request`
-* **Output**: `templates.TemplateResponse`
-
-### Get v.s. Post
-
-* **GET**：讀取資料
-* **POST**：傳遞表單
