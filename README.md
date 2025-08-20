@@ -1,6 +1,26 @@
 # RAG-CHATBOT
 
-本專案是一個基於 **Retrieval-Augmented Generation (RAG)** 的聊天系統，整合 LLM API、後端服務與前端介面。
+本專案是一個基於 **Retrieval-Augmented Generation (RAG)** 的留學代辦客服系統，整合 **LLM API、後端服務與前端介面**，協助用戶快速獲取正確資訊。
+
+* **任務**
+
+  * 建立自動化客服系統
+  * 回覆 FAQ 並彙整真實用戶經驗
+  * 提供兵役及法律相關諮詢
+
+* **挑戰**
+
+  * 面對地域性問題時，模型容易產生幻覺，需透過精準檢索提升可信度
+
+* **設定**
+
+  * Embedding Model: **BAAI/bge-m3**
+  * Chatbot Model: **mistralai/mistral-nemo\:free**
+
+* **結果**
+
+  * Retrieval: **Precision\@5 = 85.5%**
+  * Generation: [Demo 影片](metadata/rag_chabot.mp4)
 
 ---
 
