@@ -8,7 +8,7 @@
 * **Generation Demo**：
 
 <p align="center">
-  <img src="metadata/demo_hd.gif" width="50%" />
+  <img src="metadata/demo_hd.gif" width="75%" />
 </p>
 
 ---
