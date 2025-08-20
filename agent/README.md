@@ -33,6 +33,9 @@ agent/
 │       ├── create_emb.py       # 建立與管理 embedding 模型
 │       ├── process_faiss_idx.py# FAISS 索引處理與更新
 │       └── viz_rag.py          # 檢索與生成結果可視化
+├── .env           # 環境變數
+├── .gitignore     # 忽略檔案設定
+└── README.md      # 專案說明文件
 ```
 
 
@@ -108,12 +111,3 @@ python update_config.py \
 * `chatbot_model`：聊天模型
 * `judge_model`：評估模型
 * `with_rag`：是否啟用 RAG
-
----
-
-## Troubleshooting
-
-**搜尋結果很差的可能原因：**
-
-* 索引資料中不存在該筆內容
-* 嵌入模型語言不對齊（中/英文）
