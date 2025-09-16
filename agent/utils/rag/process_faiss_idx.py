@@ -14,7 +14,7 @@ def load_csvfile(path: Path):
     df = pd.read_csv(path, encoding="utf-8")
 
     required_cols = ["question", "answer", "source", "class", "uuid"]
-    page_conent_col = "answer"
+    page_content_col = "answer"
     metadata_cols = ["question", "class", "source", "uuid"]
 
     # Ensure all required columns are present
@@ -32,12 +32,13 @@ def load_csvfile(path: Path):
         for col_name, item in zip(required_cols, row):
             if col_name in metadata_cols:
                 metadata[col_name] = item
-            elif col_name == page_conent_col:
+            elif col_name == page_content_col:
                 a = item
 
+        page_content = f"Q:{metadata['question']}\nA:{a}"
         docs.append(
             Document(
-                page_content=a,
+                page_content=page_content,
                 metadata=metadata
             )
         )

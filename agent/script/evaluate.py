@@ -19,6 +19,12 @@ from params import PARAMS_ALIBABA, PARAMS_ALIBABA_WORAG, PARAMS_SENTENCE
 def create_parser():
     parser = argparse.ArgumentParser(description="Evaluate retrieval results")
     parser.add_argument(
+        "--query",
+        type=str,
+        default="美國那麼大？應該如何選擇學校呢？",
+        help="question"
+    )
+    parser.add_argument(
         "--benchmark_dir",
         type=str,
         default="../data/eval/retrieval",
@@ -40,7 +46,6 @@ def create_parser():
         "--eval_type",
         type=str,
         default="generation",
-        choices=["retrieval", "generation"],
         help="Type of evaluation to perform"
     )
     parser.add_argument(
@@ -104,6 +109,7 @@ def evaluate_retrieval(benchmark_dir: str, output_path: str, params: object):
     # 要評估的檔案清單（可依需求增減）
     eval_files = [
         os.path.join(benchmark_dir, "faq.csv"),
+        os.path.join(benchmark_dir, "faq_rephrased_full.csv"),
         os.path.join(benchmark_dir, "military_questions.csv"),
         os.path.join(benchmark_dir, "usrexp.csv"),
     ]
@@ -227,6 +233,15 @@ def evaluate_generation(benchmark_dir: str, output_path: str, params: object):
     result_df.to_csv(output_path, index=False)
     print("結果已儲存")
 
+def evaluate_retrieval_query(query: str, params: object):
+    # 建立 retriever
+    retriever = get_retriever(params.faiss_idx_path, params.emb_model, params.k)
+    k = params.k
+
+    docs = retriever.get_relevant_documents(query)[:k]
+    retrieved_docs = [(doc.metadata.get("question"), doc.page_content) for doc in docs]
+    print(retrieved_docs)
+
 
 if __name__ == "__main__":
     args = create_parser().parse_args()
@@ -241,5 +256,7 @@ if __name__ == "__main__":
         # 評估生成
         print("=== 評估生成結果 ===")
         evaluate_generation(args.benchmark_dir, args.output_path, params)
+    elif args.eval_type == "retrieval_perquestion":
+        evaluate_retrieval_query(args.query, params)
     else:
         raise ValueError(f"Unsupported evaluation type: {args.eval}")
