@@ -4,6 +4,7 @@
 
 **Results**
 
+* **Setting**: 1. Embedding Model: BAAI/bge-m3 2. Chatbot Model: openai/gpt-oss
 * **Retrieval Precision\@5**：85.5%
 * **Generation Demo**：
 
