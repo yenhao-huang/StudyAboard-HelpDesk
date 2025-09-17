@@ -10,9 +10,9 @@ project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.insert(0, project_root)
 
 from params import ChatbotParams
-from utils.rag.build_rag import chat_with_rag, chat_without_rag
+from utils.rag.build_rag import chat_with_rag, chat_without_rag, chat_with_rag_style
 
-def update_param(chatbot_model: str = None, with_rag: bool = None) -> None:
+def update_param(chatbot_model: str = None, with_rag: bool = None, with_style: bool = None) -> None:
     """
     Update the chatbot parameters stored in params.json
     """
@@ -26,6 +26,8 @@ def update_param(chatbot_model: str = None, with_rag: bool = None) -> None:
         cfg["chatbot_model"] = chatbot_model
     if with_rag is not None:
         cfg["with_rag"] = with_rag
+    if with_style is not None:
+        cfg["with_style"] = with_style
 
     # 寫回 JSON 檔
     with open("params.json", "w", encoding="utf-8") as f:
@@ -44,11 +46,15 @@ def ask_with_chatbot(query: str) -> str:
         chatbot_model=cfg["chatbot_model"],
         judge_model=cfg["judge_model"],
         with_rag=cfg["with_rag"],
-        openrouter_api_key=os.getenv("OPENROUTER_API_KEY")
+        with_style=cfg["with_style"],
+        openrouter_api_key=os.getenv("OPENROUTER_API_KEY"),
     )
 
     if params.with_rag:
-        rag_chain = chat_with_rag(params)
+        if cfg["with_style"]:
+            rag_chain = chat_with_rag_style(params)
+        else:
+            rag_chain = chat_with_rag(params)
         reply = rag_chain.invoke(query)
         print(f"Reply: {reply}")
     else:
@@ -61,7 +67,6 @@ def ask_with_chatbot(query: str) -> str:
 def tackle_msg(msg: str) -> None:
     if msg == "/close_rag":
         try:
-            print("1")
             update_param(with_rag=False)
             reply = "Success"
         except Exception as e:
@@ -70,6 +75,18 @@ def tackle_msg(msg: str) -> None:
     elif msg == "/open_rag":
         try:
             update_param(with_rag=True)
+            reply = "Success"
+        except Exception as e:
+            reply = "Failed"
+    elif msg == "/close_oral_style":
+        try:
+            update_param(with_style=False)
+            reply = "Success"
+        except Exception as e:
+            reply = "Failed"
+    elif msg == "/open_oral_style":
+        try:
+            update_param(with_style=True)
             reply = "Success"
         except Exception as e:
             reply = "Failed"

@@ -5,7 +5,7 @@
 ### **步驟 1 — 生成高品質調色盤**
 
 ```bash
-ffmpeg -i metadata/rag_chabot.mp4 -vf "fps=20,scale=1280:-1:flags=lanczos,palettegen" palette.png
+ffmpeg -i rag_chatbot.mp4 -vf "fps=20,scale=1280:-1:flags=lanczos,palettegen" palette.png
 ```
 
 **參數解釋：**
@@ -20,6 +20,6 @@ ffmpeg -i metadata/rag_chabot.mp4 -vf "fps=20,scale=1280:-1:flags=lanczos,palett
 ### **步驟 2 — 使用調色盤生成高解析度 GIF**
 
 ```bash
-ffmpeg -i metadata/rag_chabot.mp4 -i palette.png \
+ffmpeg -i rag_chatbot.mp4 -i palette.png \
 -filter_complex "fps=20,scale=1280:-1:flags=lanczos[x];[x][1:v]paletteuse" demo_hd.gif
 ```

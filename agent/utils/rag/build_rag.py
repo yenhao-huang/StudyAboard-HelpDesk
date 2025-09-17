@@ -16,27 +16,84 @@ def format_docs(docs: list[Document]) -> str:
 def chat_without_rag(params: object) -> object:
     llm = call_llm(params.chatbot_model, params.openrouter_api_key)
     prompt_wo = ChatPromptTemplate.from_messages([
-        ("system", "你是一個有幫助且簡潔的助理。"),
-        ("human", "問題：{question}\n\n回答:")
+        ("system", 
+        "你是一個有幫助且簡潔的助理。"
+        ),
+        
+        ("human", 
+        "問題：{question}\n\n"
+        "回答:\n"
+        "⚠️ 請務必遵循以下規則：\n"
+        "1. 輸出不要使用任何 Markdown 標記（例如 ** 或 ##），只輸出純文字。"
+        "2. 輸出不要使用任何 Markdown 標記（例如 ** 或 ##），只輸出純文字。"
+        "3. 輸出不要使用任何 Markdown 標記（例如 ** 或 ##），只輸出純文字。"
+        "4. 輸出不要使用任何 Markdown 標記（例如 ** 或 ##），只輸出純文字。"
+        "5. 輸出不要使用任何 Markdown 標記（例如 ** 或 ##），只輸出純文字。"
+        )
     ])
     chain_wo = prompt_wo | llm | StrOutputParser()
     return chain_wo
 
 def chat_with_rag(params: object) -> object:
     retriever = get_retriever(params.faiss_idx_path, params.emb_model, params.k)
+    prompt_rag = ChatPromptTemplate.from_messages([
+        ("system", 
+        "你是一個有幫助且簡潔的助理。"
+        ),
+        
+        ("human", 
+        "檢索內容：\n{context}\n\n"
+        "問題：{question}\n\n"
+        "⚠️ 請務必遵循以下規則：\n"
+        "1. 只根據提供的檢索內容回答問題。\n"
+        "2. 如果檢索內容中沒有答案，請回答『根據提供的內容無法回答』。\n"
+        "3. 請用中文作答，不得使用其他語言。\n"
+        "4. 不要使用任何 Markdown 標記（例如 ** 或 ##），只輸出純文字。"
+        )
+    ])
+    llm = call_llm(params.chatbot_model, params.openrouter_api_key)
+    # RAG chain: map the user query to retriever -> format -> prompt -> llm
+    chain_rag = (
+        {
+            "context": retriever | format_docs,
+            "question": RunnablePassthrough()
+        }
+        | prompt_rag
+        | llm
+        | StrOutputParser()
+    )
+
+    return chain_rag
+
+def chat_with_rag_style(params: object) -> object:
+    retriever = get_retriever(params.faiss_idx_path, params.emb_model, params.k)
     
     prompt_rag = ChatPromptTemplate.from_messages([
         ("system", 
         "你是一個有幫助且簡潔的助理。"
-        "你必須只根據提供的檢索內容回答問題。"
-        "如果檢索內容中沒有答案，請回答『根據提供的內容無法回答』。"
-        "請務必使用中文作答，不得使用其他語言。"
         ),
         
         ("human", 
-        "問題：{question}\n\n"
         "檢索內容：\n{context}\n\n"
-        "回答：")
+        "問題：{question}\n\n"
+        "⚠️ 請務必遵循以下規則：\n"
+        "1. 根據提供的檢索內容回答問題。\n"
+        "2. 請用中文作答，不得使用其他語言。\n"
+        "3. 回答時要重點清晰、不要冗長。\n"
+        "4. 回答要更加自然、友善，就像和朋友聊天一樣，請模仿下方 <few_shot_examples> 的風格。\n"
+        "5. 不要使用任何 Markdown 標記（例如 ** 或 ##），只輸出純文字。\n\n"
+        
+        "<few_shot_examples>\n"
+        "  <example>\n"
+        "    <question>我還沒當兵，但被推薦去德國研究，請問最長可以待多久？</question>\n"
+        "    <answer>如果你是還在念書的役男，那最長可以待一年；但如果不是在學身份，就只能最多六個月。希望這樣能幫到你！</answer>\n"
+        "  </example>\n\n"
+        "  <example>\n"
+        "    <question>請問替代役可以申請延期嗎？</question>\n"
+        "    <answer>可以的，但需要符合特定條件，比如繼續升學或特殊家庭狀況。建議你確認一下相關規定，再遞交申請。希望有幫助！</answer>\n"
+        "  </example>\n"
+        "</few_shot_examples>\n\n"
+        )
     ])
     llm = call_llm(params.chatbot_model, params.openrouter_api_key)
     # RAG chain: map the user query to retriever -> format -> prompt -> llm

@@ -1,8 +1,9 @@
 {
-    "emb_model": "Qwen/Qwen3-Embedding-0.6B",
-    "faiss_idx_path": "../index/Qwen/Qwen3-Embedding-0.6B_faiss_256",
+    "emb_model": "BAAI/bge-m3",
+    "faiss_idx_path": "../index/baai_bge_m3_faiss",
     "k": 5,
-    "chatbot_model": "moonshotai/kimi-k2:free",
+    "chatbot_model": "openai/gpt-oss-20b:free",
     "judge_model": "google/gemma-3-27b-it:free",
-    "with_rag": true
+    "with_rag": true,
+    "with_style": true
 }

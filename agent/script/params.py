@@ -8,6 +8,7 @@ class ChatbotParams:
     chatbot_model: str
     judge_model: str
     with_rag: bool = True
+    with_style: bool = True
     openrouter_api_key_id: int = 0
     openrouter_api_key: str = None
 
